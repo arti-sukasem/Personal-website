@@ -1,0 +1,38 @@
+#scaffoldmakerURL {
+    border: 5px solid red;
+}
+
+#bannerText {
+    font-size: 40px;
+    color: rgb(0, 0, 0);
+}
+
+table {
+    font-size: 25px;
+}
+
+.checked {
+    color: orange;
+  }
+
+#banner2ndColumn {
+    background-image: url("siriwave9.gif"); 
+    background-repeat: no-repeat;
+}
+
+p {
+    font-size: 20px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+#skills {
+    background-color: #8ebbff2a;
+}
+
+#education {
+    background-color: #8ebbff2a;
+}
+
+#pairgame {
+    background-color: #8ebbff2a;
+}
