@@ -20,11 +20,6 @@ table {
     background-repeat: no-repeat;
 }
 
-p {
-    font-size: 20px;
-    font-family: 'Times New Roman', Times, serif;
-}
-
 #skills {
     background-color: #8ebbff2a;
 }
@@ -36,3 +31,18 @@ p {
 #pairgame {
     background-color: #8ebbff2a;
 }
+
+#banner_button {
+    width: 50%;
+    position: absolute;
+    top: 40%;
+    left: 80%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+  }
+
+#banner {
+    position: relative;
+    width: 100%;
+    margin-top: -50px
+  }
