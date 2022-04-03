@@ -153,26 +153,33 @@
                 </div>
             </div>
         </div>
-        </div>
 
         <!-- Contact -->
         <hr />
-        <div class="form-group row card col-md-6 offset-md-3 my-3" id="contact"  data-aos="fade-down">
-            <div class="my-3">
-                <h4 class="text-center">CONTACT ME</h4>
-                <!-- modify this form HTML and place wherever you want your form -->
-                <form action="https://formspree.io/f/xlezlayp" method="POST">
-                    <label for="inputEmail3" class="col-sm-5 col-form-label">Your email:</label>
-                    <div class="col-sm-12"><input type="email" class="form-control" id="email" name="email" placeholder="Email" required></div>
-                    <label for="inputEmail3" class="col-sm-5 col-form-label">Name:</label>
-                    <div class="col-sm-12"><input type="text" class="form-control" id="name" name="name" placeholder="Name" required></div>
-                    <label for="inputEmail3" class="col-sm-5 col-form-label">Subject:</label>
-                    <div class="col-sm-12"><input type="text" class="form-control" id="subject" name="subject" placeholder="Subject" required></div>
-                    <label for="inputEmail3" class="col-sm-5 col-form-label">Your Message:</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="message" placeholder="Message..." required></textarea> <br />
-                    <!-- your other form fields go here -->
-                    <div class="text-center"><button type="submit" class="btn btn-primary mx-auto">Send</button></div>
-                </form>
+        <div class="row">
+            <div class="col-lg-6 col-md-12">
+                <!--The div element for the map -->
+                <div id="map"></div>
+                <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+                <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDpNSnCfF9QRv9UM0EkOFBAjnzjH7aiWiQ&callback=initMap&v=weekly"></script>
+            </div>
+            <div class="col-lg-6 col-md-12 p-4">
+                <div class="form-group card p-4" id="contact"  data-aos="fade-down">
+                    <h4 class="text-center">CONTACT ME</h4>
+                    <!-- modify this form HTML and place wherever you want your form -->
+                    <form action="https://formspree.io/f/xlezlayp" method="POST">
+                        <label for="inputEmail3" class="col-sm-5 col-form-label">Your email:</label>
+                        <div class="col-sm-12"><input type="email" class="form-control" id="email" name="email" placeholder="Email" required></div>
+                        <label for="inputEmail3" class="col-sm-5 col-form-label">Name:</label>
+                        <div class="col-sm-12"><input type="text" class="form-control" id="name" name="name" placeholder="Name" required></div>
+                        <label for="inputEmail3" class="col-sm-5 col-form-label">Subject:</label>
+                        <div class="col-sm-12"><input type="text" class="form-control" id="subject" name="subject" placeholder="Subject" required></div>
+                        <label for="inputEmail3" class="col-sm-5 col-form-label">Your Message:</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="message" placeholder="Message..." required></textarea> <br />
+                        <!-- your other form fields go here -->
+                        <div class="text-center"><button type="submit" class="btn btn-primary mx-auto">Send</button></div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
