@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Scaffoldmaker — Arti Sukasem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08090d;
+  --bg2:#0e1018;
+  --bg3:#141720;
+  --surface:#191d2a;
+  --border:#ffffff10;
+  --border2:#ffffff1e;
+  --accent:#00bfa5;
+  --accent-dim:rgba(0,191,165,0.12);
+  --blue:#3d8ef8;
+  --text:#dde1ec;
+  --muted:#7e8699;
+  --dim:#3d4358;
+  --mono:'DM Mono',monospace;
+  --sans:'DM Sans',sans-serif;
+  --display:'Syne',sans-serif;
+}
+
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:300;line-height:1.75;overflow-x:hidden}
+
+/* ─── NAV ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 3rem;height:52px;
+  background:rgba(8,9,13,0.82);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.nav-back{
+  font-family:var(--mono);font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:0.5rem;
+  transition:color 0.2s;
+}
+.nav-back:hover{color:var(--accent)}
+.nav-title{font-family:var(--display);font-size:0.78rem;font-weight:700;letter-spacing:0.06em;color:var(--dim)}
+.nav-links{display:flex;gap:1.75rem;list-style:none}
+.nav-links a{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--accent)}
+
+/* ─── HERO ─── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:8rem 3rem 5rem;position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 70% 60% at 65% 40%, rgba(0,191,165,0.07) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 40% at 20% 70%, rgba(61,142,248,0.05) 0%, transparent 60%);
+}
+.hero-grid-lines{
+  position:absolute;inset:0;z-index:0;
+  background-image:
+    linear-gradient(var(--border) 1px,transparent 1px),
+    linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:80px 80px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);
+}
+.hero-content{position:relative;z-index:1;max-width:900px}
+.hero-eyebrow{
+  display:flex;align-items:center;gap:1rem;
+  font-family:var(--mono);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:2rem;
+}
+.hero-eyebrow-line{width:32px;height:1px;background:var(--accent)}
+.hero h1{
+  font-family:var(--display);font-size:clamp(3.5rem,9vw,7rem);
+  font-weight:800;line-height:0.95;letter-spacing:-0.03em;
+  margin-bottom:1.5rem;
+}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero-sub{
+  font-family:var(--sans);font-size:clamp(1rem,2vw,1.2rem);font-weight:300;
+  color:var(--muted);max-width:580px;margin-bottom:3rem;line-height:1.8;
+}
+.hero-meta{
+  display:flex;gap:3rem;padding-top:2.5rem;
+  border-top:1px solid var(--border);flex-wrap:wrap;
+}
+.meta-item{display:flex;flex-direction:column;gap:0.2rem}
+.meta-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--dim)}
+.meta-value{font-family:var(--mono);font-size:0.8rem;color:var(--text)}
+.meta-value a{color:var(--accent);text-decoration:none}
+.meta-value a:hover{text-decoration:underline}
+
+/* ─── SCROLL INDICATOR ─── */
+.scroll-hint{
+  position:absolute;bottom:2.5rem;right:3rem;z-index:1;
+  display:flex;flex-direction:column;align-items:center;gap:0.5rem;
+  font-family:var(--mono);font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--dim);
+}
+.scroll-bar{width:1px;height:40px;background:linear-gradient(to bottom,var(--dim),transparent);animation:scrolldown 1.8s ease-in-out infinite}
+@keyframes scrolldown{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ─── SECTIONS ─── */
+section{padding:6rem 3rem;position:relative}
+.section-label{
+  font-family:var(--mono);font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.75rem;
+}
+.section-label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+.section-h2{
+  font-family:var(--display);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;
+  line-height:1.1;letter-spacing:-0.01em;margin-bottom:2.5rem;
+}
+
+/* ─── CONTEXT ─── */
+.context-section{background:var(--bg2)}
+.context-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:5rem;align-items:start}
+.context-text p{color:var(--muted);font-size:0.95rem;line-height:1.85;margin-bottom:1.25rem}
+.context-text p:last-child{margin-bottom:0}
+.context-text strong{color:var(--text);font-weight:400}
+.fact-stack{display:flex;flex-direction:column;gap:1px;border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.fact-row{
+  display:grid;grid-template-columns:1fr 1.4fr;
+  background:var(--surface);padding:1rem 1.25rem;gap:1rem;
+  border-bottom:1px solid var(--border);
+}
+.fact-row:last-child{border-bottom:none}
+.fact-key{font-family:var(--mono);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);padding-top:0.1rem}
+.fact-val{font-size:0.875rem;color:var(--text);line-height:1.5}
+.fact-val small{display:block;font-size:0.75rem;color:var(--muted);margin-top:0.2rem}
+
+/* ─── WHAT IS A SCAFFOLD ─── */
+.explainer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-top:3rem}
+.explainer-cell{background:var(--bg2);padding:2rem 1.75rem}
+.explainer-num{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.15em;color:var(--dim);margin-bottom:1rem}
+.explainer-cell h3{font-family:var(--display);font-size:1rem;font-weight:600;margin-bottom:0.75rem;line-height:1.3}
+.explainer-cell p{font-size:0.85rem;color:var(--muted);line-height:1.7}
+
+/* ─── GALLERY ─── */
+.gallery-section{background:var(--bg2)}
+.gallery-intro{max-width:620px;color:var(--muted);font-size:0.95rem;line-height:1.85;margin-bottom:3.5rem}
+.gallery-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.gallery-item{display:flex;flex-direction:column;gap:0;border:1px solid var(--border);border-radius:4px;overflow:hidden;background:var(--surface);transition:border-color 0.3s}
+.gallery-item:hover{border-color:rgba(0,191,165,0.3)}
+.gallery-item.wide{grid-column:1/-1}
+.gallery-img-wrap{
+  background:var(--bg3);
+  display:flex;align-items:center;justify-content:center;
+  padding:2rem;min-height:260px;position:relative;overflow:hidden;
+}
+.gallery-item.wide .gallery-img-wrap{min-height:320px}
+.gallery-img-wrap img{max-width:100%;max-height:280px;object-fit:contain;border-radius:2px}
+.gallery-item.wide .gallery-img-wrap img{max-height:320px}
+.gallery-caption{padding:1.25rem 1.5rem;border-top:1px solid var(--border)}
+.gallery-caption h3{font-family:var(--display);font-size:0.95rem;font-weight:600;margin-bottom:0.4rem}
+.gallery-caption p{font-size:0.8rem;color:var(--muted);line-height:1.6}
+.gallery-tag{
+  display:inline-block;font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;
+  padding:0.2rem 0.6rem;border-radius:2px;margin-top:0.75rem;margin-right:0.35rem;
+  background:var(--accent-dim);color:var(--accent);
+}
+.gallery-tag.blue{background:rgba(61,142,248,0.1);color:var(--blue)}
+.gallery-tag.gray{background:rgba(255,255,255,0.05);color:var(--muted)}
+
+/* ─── PIPELINE ─── */
+.pipeline-section{background:var(--bg)}
+.pipeline-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:3rem;position:relative}
+.pipeline-steps::before{
+  content:'';position:absolute;top:2.1rem;left:10%;right:10%;height:1px;
+  background:linear-gradient(to right,var(--dim),var(--accent),var(--dim));
+  z-index:0;
+}
+.pipeline-step{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 1rem;position:relative;z-index:1}
+.step-dot{
+  width:18px;height:18px;border-radius:50%;border:1px solid var(--accent);
+  background:var(--bg);margin-bottom:1.25rem;position:relative;
+  display:flex;align-items:center;justify-content:center;
+}
+.step-dot::after{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.step-num{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.15em;color:var(--dim);margin-bottom:0.5rem}
+.step-label{font-family:var(--display);font-size:0.82rem;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:0.5rem}
+.step-desc{font-size:0.72rem;color:var(--muted);line-height:1.6}
+
+/* ─── IMPACT ─── */
+.impact-section{background:var(--bg2)}
+.impact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.impact-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:2rem 1.75rem}
+.impact-card.featured{border-color:rgba(0,191,165,0.25);background:rgba(0,191,165,0.04)}
+.impact-icon{font-size:1.5rem;margin-bottom:1rem;line-height:1}
+.impact-card h3{font-family:var(--display);font-size:1rem;font-weight:600;margin-bottom:0.6rem;line-height:1.3}
+.impact-card p{font-size:0.85rem;color:var(--muted);line-height:1.7}
+
+/* ─── SKILLS USED ─── */
+.skills-section{background:var(--bg)}
+.skills-row{display:flex;flex-wrap:wrap;gap:0.6rem;margin-bottom:1rem}
+.skill-chip{
+  font-family:var(--mono);font-size:0.7rem;letter-spacing:0.06em;
+  padding:0.35rem 0.85rem;border:1px solid var(--border2);border-radius:2px;color:var(--muted);
+  transition:border-color 0.2s,color 0.2s;
+}
+.skill-chip:hover{border-color:var(--accent);color:var(--accent)}
+.skill-chip.core{border-color:rgba(0,191,165,0.3);color:var(--accent);background:var(--accent-dim)}
+
+/* ─── CTA ─── */
+.cta-section{
+  background:var(--bg2);text-align:center;
+  border-top:1px solid var(--border);
+}
+.cta-section p{color:var(--muted);font-size:0.95rem;max-width:480px;margin:0 auto 2.5rem;line-height:1.8}
+.cta-links{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
+.btn{
+  font-family:var(--mono);font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;
+  padding:0.75rem 1.5rem;border-radius:3px;text-decoration:none;
+  transition:all 0.2s;display:inline-flex;align-items:center;gap:0.5rem;
+}
+.btn-primary{background:var(--accent);color:#000;font-weight:500}
+.btn-primary:hover{background:#00d4b8;transform:translateY(-1px)}
+.btn-outline{border:1px solid var(--border2);color:var(--muted)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ─── FOOTER ─── */
+footer{
+  padding:2rem 3rem;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.footer-copy{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;color:var(--dim)}
+.footer-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent);margin-right:0.5rem;animation:pulse 2.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* ─── DIVIDER ─── */
+hr{border:none;border-top:1px solid var(--border)}
+
+/* ─── HEART EMBED ─── */
+.heart-embed-wrap{position:relative;background:var(--bg3)}
+.heart-poster{position:relative;cursor:pointer;display:block;min-height:420px;overflow:hidden}
+.heart-poster-img{width:100%;height:420px;object-fit:cover;filter:brightness(0.55) saturate(0.8);display:block;transition:filter 0.3s}
+.heart-poster:hover .heart-poster-img{filter:brightness(0.4) saturate(0.7)}
+.heart-poster-overlay{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:0.85rem;
+  background:linear-gradient(to top,rgba(8,9,13,0.7) 0%,rgba(8,9,13,0.2) 100%);
+  transition:background 0.3s;
+}
+.heart-poster:hover .heart-poster-overlay{background:linear-gradient(to top,rgba(8,9,13,0.85) 0%,rgba(8,9,13,0.4) 100%)}
+.heart-play-btn{
+  width:64px;height:64px;border-radius:50%;
+  border:1.5px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--accent);
+  transition:background 0.2s,transform 0.2s;
+}
+.heart-poster:hover .heart-play-btn{background:rgba(0,191,165,0.15);transform:scale(1.08)}
+.heart-play-label{font-family:var(--display);font-size:1rem;font-weight:600;color:var(--text);letter-spacing:0.02em}
+.heart-play-sub{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted)}
+.heart-loading{
+  min-height:420px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:1.5rem;
+  font-family:var(--mono);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);
+}
+.heart-loading-ring{
+  width:36px;height:36px;border-radius:50%;
+  border:1.5px solid var(--dim);border-top-color:var(--accent);
+  animation:spin 0.9s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:760px){
+  nav{padding:0 1.25rem}
+  .nav-title{display:none}
+  section{padding:4rem 1.25rem}
+  .hero{padding:6rem 1.25rem 4rem}
+  .hero-meta{gap:1.75rem}
+  .context-grid{grid-template-columns:1fr}
+  .explainer-grid{grid-template-columns:1fr}
+  .gallery-grid{grid-template-columns:1fr}
+  .gallery-item.wide{grid-column:auto}
+  .pipeline-steps{grid-template-columns:1fr;gap:2rem}
+  .pipeline-steps::before{display:none}
+  .impact-grid{grid-template-columns:1fr}
+  footer{flex-direction:column;gap:1rem;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-back" href="https://arti-sukasem.github.io/Personal-website/">← Back to CV</a>
+  <span class="nav-title">Scaffoldmaker · Case Study</span>
+  <ul class="nav-links">
+    <li><a href="#context">Context</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#impact">Impact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow"><span class="hero-eyebrow-line"></span>Research project · Auckland Bioengineering Institute · 2019–2021</p>
+    <h1>3D ORGAN<br/><em>SCAFFOLD</em><br/>MODELLING</h1>
+    <p class="hero-sub">
+      Building computational anatomical models of human and animal organs for simulation, data registration, and visualisation — as part of the NIH SPARC programme.
+    </p>
+    <div class="hero-meta">
+      <div class="meta-item">
+        <span class="meta-label">Programme</span>
+        <span class="meta-value"><a href="https://sparc.science" target="_blank">NIH SPARC</a></span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Institution</span>
+        <span class="meta-value">Auckland Bioengineering Institute</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Tool</span>
+        <span class="meta-value"><a href="https://github.com/ABI-Software/scaffoldmaker" target="_blank">Scaffoldmaker (open-source)</a></span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Language</span>
+        <span class="meta-value">Python</span>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-bar"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- CONTEXT -->
+<section class="context-section" id="context">
+  <p class="section-label">Background</p>
+  <div class="context-grid">
+    <div>
+      <h2 class="section-h2">What is<br/>Scaffoldmaker?</h2>
+      <div class="context-text">
+        <p>
+          The nervous system controls virtually every organ in the body — but mapping precisely <strong>how nerves connect to tissue</strong> in three dimensions is extraordinarily difficult. The NIH SPARC programme (Stimulating Peripheral Activity to Relieve Conditions) was set up to do exactly that, with the goal of developing new bioelectronic treatments for disease.
+        </p>
+        <p>
+          A key challenge: researchers extracting tissue specimens need a shared anatomical reference — a <strong>3D model of the organ</strong> they can anchor their data to. That's what Scaffoldmaker provides. It's an open-source Python library for generating mathematically precise, species-specific anatomical scaffold models using the <strong>finite element method</strong>.
+        </p>
+        <p>
+          My role at Auckland Bioengineering Institute was to develop scaffold models for specific organs — building the geometry, validating the mesh structure, and ensuring the models could support real experimental data registration from international research groups.
+        </p>
+      </div>
+    </div>
+    <div>
+      <div class="fact-stack">
+        <div class="fact-row">
+          <span class="fact-key">Role</span>
+          <span class="fact-val">Research Engineer<small>Auckland Bioengineering Institute</small></span>
+        </div>
+        <div class="fact-row">
+          <span class="fact-key">Organs</span>
+          <span class="fact-val">Heart, Lung &amp; Airway, Stomach, Colon</span>
+        </div>
+        <div class="fact-row">
+          <span class="fact-key">Species</span>
+          <span class="fact-val">Human, mouse, rat, pig</span>
+        </div>
+        <div class="fact-row">
+          <span class="fact-key">Method</span>
+          <span class="fact-val">Finite Element Method<small>Cubic Hermite / bilinear basis functions</small></span>
+        </div>
+        <div class="fact-row">
+          <span class="fact-key">Applications</span>
+          <span class="fact-val">Simulation · Visualisation · Data registration</span>
+        </div>
+        <div class="fact-row">
+          <span class="fact-key">Funder</span>
+          <span class="fact-val">National Institutes of Health (NIH)<small>SPARC OT2OD023848</small></span>
+        </div>
+        <div class="fact-row">
+          <span class="fact-key">Live demo</span>
+          <span class="fact-val"><a href="https://sparc.science/maps" target="_blank" style="color:var(--accent)">sparc.science/maps ↗</a></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPLAINER -->
+  <div class="explainer-grid">
+    <div class="explainer-cell">
+      <p class="explainer-num">01</p>
+      <h3>Build the geometry</h3>
+      <p>Each organ is defined as a parametric surface mesh using the finite element method — mathematically smooth, watertight, and anatomically proportioned for each target species.</p>
+    </div>
+    <div class="explainer-cell">
+      <p class="explainer-num">02</p>
+      <h3>Register experimental data</h3>
+      <p>Researchers extract tissue specimens and record their 3D coordinates. Those coordinates are mapped onto the scaffold, anchoring real biological data to a consistent anatomical reference.</p>
+    </div>
+    <div class="explainer-cell">
+      <p class="explainer-num">03</p>
+      <h3>Simulate &amp; visualise</h3>
+      <p>The scaffold becomes a substrate for simulation — including time-varying deformation. The beating heart model, for example, replays subject-specific cardiac motion with registered data overlaid.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-section" id="gallery">
+  <p class="section-label">Outputs</p>
+  <h2 class="section-h2">Models I built</h2>
+  <p class="gallery-intro">
+    Each scaffold represents months of anatomical research, mesh refinement, and validation against experimental data. These models are publicly accessible via the SPARC portal and used by research groups internationally.
+  </p>
+
+  <div class="gallery-grid">
+
+    <!-- HEART — wide featured with interactive embed -->
+    <div class="gallery-item wide" id="heart-card">
+      <div class="heart-embed-wrap">
+        <!-- Poster / click-to-load -->
+        <div class="heart-poster" id="heart-poster" onclick="loadHeartEmbed()" role="button" tabindex="0" aria-label="Load interactive beating heart simulation" onkeydown="if(event.key==='Enter')loadHeartEmbed()">
+          <img src="https://arti-sukasem.github.io/Personal-website/images/heart.jpg" alt="3D finite element heart scaffold" class="heart-poster-img" />
+          <div class="heart-poster-overlay">
+            <div class="heart-play-btn" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </div>
+            <p class="heart-play-label">Launch interactive simulation</p>
+            <p class="heart-play-sub">3D · Rotatable · Animated · Powered by SPARC / scaffoldvuer</p>
+          </div>
+        </div>
+        <!-- iframe injected on click -->
+        <iframe id="heart-iframe"
+          src=""
+          title="Interactive beating heart scaffold simulation — SPARC / ABI"
+          allowfullscreen
+          allow="autoplay"
+          style="display:none;width:100%;height:560px;border:none;background:#08090d">
+        </iframe>
+        <!-- Loading state -->
+        <div class="heart-loading" id="heart-loading" style="display:none">
+          <div class="heart-loading-ring"></div>
+          <p>Loading simulation…</p>
+        </div>
+      </div>
+      <div class="gallery-caption">
+        <h3>Heart Scaffold — Subject-Specific Beating Model</h3>
+        <p>
+          The heart scaffold was one of the flagship deliverables of the ABI SPARC project. The model captures the full ventricular geometry and is capable of subject-specific deformation — meaning we can replay a patient's or animal subject's actual cardiac motion, and register the precise 3D location of every tissue specimen extracted during an experiment.
+        </p>
+        <p style="margin-top:0.75rem;font-size:0.8rem;color:var(--muted)">
+          This enables researchers to say exactly <em>where</em> in the heart a specimen came from — something previously impossible with flat diagrams or generic anatomy references. <strong style="color:var(--text);font-weight:400">Click the simulation above to interact with it directly</strong> — rotate, zoom, and watch it beat in real time.
+        </p>
+        <div>
+          <span class="gallery-tag">Cardiac geometry</span>
+          <span class="gallery-tag">Subject-specific</span>
+          <span class="gallery-tag blue">FEM mesh</span>
+          <span class="gallery-tag gray">Data registration</span>
+          <span class="gallery-tag" style="border-color:rgba(255,160,50,0.35);color:#ffb347;background:rgba(255,160,50,0.07)">Interactive 3D</span>
+        </div>
+        <p style="margin-top:1.25rem">
+          <a href="https://mapcore-demo.org/current/scaffoldvuer/#/?url=https%3A%2F%2Fmapcore-bucket1.s3-us-west-2.amazonaws.com%2Fexamples%2Fbeating-heart%2Fbeating_heart_metadata.json&region=spiral%20colon?#autoplay"
+             target="_blank"
+             style="font-family:var(--mono);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;">
+            Open full-screen in SPARC portal ↗
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <!-- LUNGS -->
+    <div class="gallery-item">
+      <div class="gallery-img-wrap">
+        <img src="https://arti-sukasem.github.io/Personal-website/images/Lungs.gif" alt="Animated 3D lung and airway scaffold" loading="lazy" />
+      </div>
+      <div class="gallery-caption">
+        <h3>Lung &amp; Airway Scaffold</h3>
+        <p>A hierarchical scaffold capturing the full airway tree geometry — from trachea through to terminal bronchioles — branching structure intact, parametrically defined for multiple species.</p>
+        <div>
+          <span class="gallery-tag">Airway tree</span>
+          <span class="gallery-tag blue">Branching geometry</span>
+          <span class="gallery-tag gray">Multi-species</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STOMACH -->
+    <div class="gallery-item">
+      <div class="gallery-img-wrap">
+        <img src="https://arti-sukasem.github.io/Personal-website/images/stomach.jpg" alt="3D stomach scaffold model" loading="lazy" />
+      </div>
+      <div class="gallery-caption">
+        <h3>Stomach Scaffold</h3>
+        <p>Anatomically accurate stomach surface scaffold for gastric nerve mapping. Used by SPARC researchers studying autonomic innervation of the gastrointestinal tract.</p>
+        <div>
+          <span class="gallery-tag">GI tract</span>
+          <span class="gallery-tag blue">Nerve mapping</span>
+          <span class="gallery-tag gray">Autonomic system</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:2rem;padding:1.5rem 2rem;background:var(--surface);border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+    <div>
+      <p style="font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--dim);margin-bottom:0.3rem">Explore all SPARC organ models</p>
+      <p style="font-size:0.875rem;color:var(--muted)">All scaffolds are publicly accessible and interactive via the SPARC portal — including the beating heart simulation.</p>
+    </div>
+    <a href="https://sparc.science/maps" target="_blank" class="btn btn-outline">Open SPARC portal ↗</a>
+  </div>
+</section>
+
+<!-- PIPELINE -->
+<section class="pipeline-section">
+  <p class="section-label">Process</p>
+  <h2 class="section-h2">How a scaffold is built</h2>
+  <div class="pipeline-steps">
+    <div class="pipeline-step">
+      <div class="step-dot"></div>
+      <p class="step-num">01</p>
+      <p class="step-label">Anatomical research</p>
+      <p class="step-desc">Study anatomy literature and imaging data to understand the target organ's geometry and species variation</p>
+    </div>
+    <div class="pipeline-step">
+      <div class="step-dot"></div>
+      <p class="step-num">02</p>
+      <p class="step-label">Mesh design</p>
+      <p class="step-desc">Define the finite element topology — node layout, element connectivity, and basis functions — in Python</p>
+    </div>
+    <div class="pipeline-step">
+      <div class="step-dot"></div>
+      <p class="step-num">03</p>
+      <p class="step-label">Geometry fitting</p>
+      <p class="step-desc">Tune node positions and derivatives to match anatomical proportions across target species and sex</p>
+    </div>
+    <div class="pipeline-step">
+      <div class="step-dot"></div>
+      <p class="step-num">04</p>
+      <p class="step-label">Validation</p>
+      <p class="step-desc">Compare scaffold against imaging data and experimental feedback from partner research groups</p>
+    </div>
+    <div class="pipeline-step">
+      <div class="step-dot"></div>
+      <p class="step-num">05</p>
+      <p class="step-label">Deployment</p>
+      <p class="step-desc">Merge into the open-source Scaffoldmaker library and publish to the SPARC portal for global use</p>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section class="impact-section" id="impact">
+  <p class="section-label">Significance</p>
+  <h2 class="section-h2">Why this work matters</h2>
+  <div class="impact-grid">
+    <div class="impact-card featured">
+      <div class="impact-icon">🫀</div>
+      <h3>Enabling bioelectronic medicine</h3>
+      <p>SPARC is a foundational effort to map the body's neural circuitry — a prerequisite for developing precise bioelectronic therapies that stimulate specific nerves to treat chronic disease without pharmaceuticals. These scaffolds are the anatomical reference layer that makes that mapping possible.</p>
+    </div>
+    <div class="impact-card">
+      <div class="impact-icon">📍</div>
+      <h3>Precise data registration</h3>
+      <p>Before scaffolds, researchers had no shared 3D reference for locating where their specimens came from. A scaffold gives every experiment a common coordinate system — dramatically improving reproducibility and cross-study comparison.</p>
+    </div>
+    <div class="impact-card">
+      <div class="impact-icon">🌏</div>
+      <h3>Open science, global reach</h3>
+      <p>All scaffold models are open-source and hosted on the SPARC portal, accessible to research groups worldwide. The models built during this project are still in active use by international collaborators.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="skills-section">
+  <p class="section-label">Technical skills demonstrated</p>
+  <h2 class="section-h2">What this project required</h2>
+  <div style="max-width:700px">
+    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:2rem;line-height:1.8">
+      Scaffoldmaker sits at the intersection of computational mathematics, anatomy, software engineering, and research collaboration — a genuinely cross-disciplinary project.
+    </p>
+  </div>
+  <div class="skills-row">
+    <span class="skill-chip core">Python</span>
+    <span class="skill-chip core">Finite Element Method</span>
+    <span class="skill-chip core">Computational Modelling</span>
+    <span class="skill-chip core">3D Geometry</span>
+    <span class="skill-chip core">Anatomical Scaffold Design</span>
+  </div>
+  <div class="skills-row">
+    <span class="skill-chip">Numerical Methods</span>
+    <span class="skill-chip">Data Registration</span>
+    <span class="skill-chip">Mesh Validation</span>
+    <span class="skill-chip">Scientific Visualisation</span>
+    <span class="skill-chip">Open Source Contribution</span>
+    <span class="skill-chip">Research Collaboration</span>
+    <span class="skill-chip">Biomedical Domain Knowledge</span>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <p class="section-label" style="justify-content:center"><span style="display:none">—</span>Get in touch</p>
+  <h2 class="section-h2" style="margin-bottom:1rem">Interested in my work?</h2>
+  <p>I'm currently based in Melbourne and open to biomedical field service engineering, software engineering, and business analysis roles. Feel free to reach out via LinkedIn or explore the rest of my CV.</p>
+  <div class="cta-links">
+    <a href="https://www.linkedin.com/in/arti-sukasem/" class="btn btn-primary" target="_blank">Connect on LinkedIn →</a>
+    <a href="https://github.com/arti-sukasem" class="btn btn-outline" target="_blank">GitHub ↗</a>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-copy"><span class="footer-dot"></span>Arti Sukasem · Scaffoldmaker Case Study</span>
+  <span class="footer-copy">Auckland Bioengineering Institute · NIH SPARC · 2019–2021</span>
+</footer>
+
+<script>
+function loadHeartEmbed() {
+  var poster  = document.getElementById('heart-poster');
+  var loading = document.getElementById('heart-loading');
+  var iframe  = document.getElementById('heart-iframe');
+
+  poster.style.display  = 'none';
+  loading.style.display = 'flex';
+
+  var src = 'https://mapcore-demo.org/current/scaffoldvuer/#/?url=' +
+    encodeURIComponent('https://mapcore-bucket1.s3-us-west-2.amazonaws.com/examples/beating-heart/beating_heart_metadata.json') +
+    '&autoplay=true';
+
+  iframe.onload = function() {
+    loading.style.display = 'none';
+    iframe.style.display  = 'block';
+  };
+
+  /* Fallback: if iframe doesn't fire onload (cross-origin) just show it after 4s */
+  setTimeout(function() {
+    if (iframe.style.display === 'none') {
+      loading.style.display = 'none';
+      iframe.style.display  = 'block';
+    }
+  }, 4000);
+
+  iframe.src = src;
+}
+</script>
+</body>
+</html>
